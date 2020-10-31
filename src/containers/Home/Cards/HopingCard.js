@@ -1,17 +1,21 @@
 import React, { Component} from 'react'
-import TimeLogo from '../../Assets/time.png'
-import Aux from '../../hoc/Auxilliary/Auxilliary'
+import TimeLogo from '../../../Assets/Images/time.png'
+import Aux from '../../../hoc/Auxilliary/Auxilliary'
 import Card from '@material-ui/core/Card'
 import Button from '@material-ui/core/Button'
 import { CardContent, CardMedia, Grid, Typography } from '@material-ui/core'
-import classes from '../../components/Cards/Card.css'
+import classes from './Cards.css'
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
-
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControl from '@material-ui/core/FormControl';
+import IconButton from '@material-ui/core/IconButton';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 class HopingCard extends Component{
     
@@ -23,7 +27,9 @@ class HopingCard extends Component{
             minutes: this.date.getMinutes(),
             seconds: this.date.getSeconds(),
             hopIn: false,
-            open: false
+            open: false,
+            verificationPassword: null,
+            showPassword: false
         }
         setInterval(() => {
             this.date = new Date()
@@ -33,6 +39,19 @@ class HopingCard extends Component{
                 seconds: this.date.getSeconds()
             })
         }, 1000)
+    }
+
+    handlePasswordChange = (event) => {
+        this.setState({
+            verificationPassword: event.target.value 
+        })
+        console.log(this.state.verificationPassword)
+    }
+
+    handleClickShowPassword = () => {
+        this.setState({
+            showPassword: !this.state.showPassword
+        })
     }
 
     handleClose = () => {
@@ -59,10 +78,10 @@ class HopingCard extends Component{
             <Aux>
                 <Card className={classes.hopingCard}>
                     <Grid container>
-                        <Grid item md={3} sm={3}>
-                            <CardMedia image={TimeLogo} title="ancmnt" style={ { height: "115px", width: "auto", marginTop: "10px"} } />
+                        <Grid item xs={3}>
+                            <CardMedia image={TimeLogo} title="ancmnt" style={ { height: "115px", marginTop: "10px"} } />
                         </Grid>
-                        <Grid item md={9} sm={9}>
+                        <Grid item xs={9}>
                             <CardContent>
                                 <Typography gutterBottom variant="subtitle1">
                                     {this.date.toDateString()}
@@ -93,16 +112,30 @@ class HopingCard extends Component{
                 <Dialog open={this.state.open} onClose={()=>{}}>
                     <DialogContent>
                         <DialogContentText>
-                            Please provide a note for attendance
+                            Please Enter Password
                         </DialogContentText>
-                        <TextField
-                            label="Note"
-                            multiline
-                            rows={3}
-                            fullWidth
-                            variant="outlined"
-                            style={{width:"400px"}}
+                        <FormControl variant="outlined" size="small" required={true}>
+                        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-password"
+                            type={this.state.showPassword ? 'text' : 'password'}
+                            value={this.state.verificationPassword}
+                            onChange={this.handlePasswordChange}
+                            endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                style={{outline: "0px"}}
+                                aria-label="toggle password visibility"
+                                onClick={this.handleClickShowPassword}
+                                edge="end"
+                                >
+                                {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
+                            }
+                            labelWidth={70}
                         />
+                        </FormControl>
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={this.handleClose} variant="contained" size="small" style={{outline: "0px"}} color="primary">
